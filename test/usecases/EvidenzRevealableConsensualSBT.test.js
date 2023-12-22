@@ -120,4 +120,10 @@ describe('EvidenzRevealableConsensualSBT', () => {
             .to.be.revertedWith('ERC721: transfer from incorrect owner');
     });
   });
+
+  it('return the total supply of the collection', async () => {
+    const mint = await this.contract.mint([{ data, hashedPinCode, hashedPublicKey }]);
+    await mint.wait();
+    await expect(this.contract.totalSupply()).to.eventually.equal(1);
+  });
 });

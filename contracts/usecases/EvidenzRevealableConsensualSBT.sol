@@ -2,6 +2,7 @@
 pragma solidity ^0.8.18;
 
 import {ERC721} from '@openzeppelin/contracts/token/ERC721/ERC721.sol';
+import {ERC721Enumerable} from '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 
 import {Evidenz} from '../domain/Evidenz.sol';
 import {ERC5484} from '../token/ERC5484/ERC5484.sol';
@@ -17,6 +18,7 @@ contract EvidenzRevealableConsensualSBT is
     Premint,
     ERC5484Burnable,
     ERC721Base64URI,
+    ERC721Enumerable,
     ERC721Renamable
 {
     struct ToMint {
@@ -71,7 +73,7 @@ contract EvidenzRevealableConsensualSBT is
         public
         view
         virtual
-        override(ERC721, ERC721Renamable, ERC5484, Revealable)
+        override(ERC721, ERC721Enumerable, ERC721Renamable, ERC5484, Revealable)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
@@ -114,6 +116,18 @@ contract EvidenzRevealableConsensualSBT is
         uint256 tokenId
     ) internal virtual override(ERC721, ERC5484) {
         return super._transfer(from, to, tokenId);
+    }
+
+    /**
+     * @dev See {ERC721-_beforeTokenTransfer}.
+     */
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 firstTokenId,
+        uint256 batchSize
+    ) internal virtual override(ERC721, ERC721Enumerable) {
+        super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
     }
 
     /**
