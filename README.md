@@ -400,3 +400,9 @@ The system comprises the following contracts:
 - `Premint.sol`: Contract defining premint functionalities for SBT issuance.
 - `Revealable.sol`: Contract implementing revealable functionalities for SBTs.
 - Other utility and interface contracts: `Asserts.sol`, `Environment.sol`.
+
+## ABI
+
+The ABI (Application Binary Interface) for all contracts is accessible under the directory `artifacts/contracts/<contract-path>/<contract>.sol`. 
+
+Each contract's ABI is stored in a separate JSON file named `<contract>.json`. This ABI file provides a standardized interface description that specifies how to interact with the smart contract, including the available functions, their parameters, and return types. It serves as a crucial component for integrating smart contracts into decentralized applications (DApps) or other development environments.
