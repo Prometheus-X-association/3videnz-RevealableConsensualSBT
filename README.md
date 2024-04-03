@@ -30,7 +30,7 @@ npm run check
 ## Deployment
 The contract can be deployed to the desired network using [Remix IDE](https://remix.ethereum.org/) or [Hardhat network configurations](https://hardhat.org/hardhat-runner/docs/guides/deploying).
 
-Compile the contracts using ```Solidity version `0.8.18` and with the following optimizations:
+Compile the contracts using Solidity version `0.8.18` and with the following optimizations:
 
 ```javascript
 settings: {
