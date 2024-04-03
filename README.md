@@ -9,7 +9,7 @@ Evidenz Revealable Consensual SBT is a smart contract system for managing Promet
 - **Support for ERC721 token standards** with additional functionalities for revealable and burnable tokens.
 
 ### Requirements
-To run the EvidenzRevealableConsensualSBT contract and associated development tools, ensure the following versions are installed:
+To run the `EvidenzRevealableConsensualSBT` contract and associated development tools, ensure the following versions are installed:
 
 - **Node.js**: Version `20.9.0` or later.
 - **npm:** Version `10.1.0` or later.
