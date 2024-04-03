@@ -8,6 +8,15 @@ Evidenz Revealable Consensual SBT is a smart contract system for managing Promet
 - **Reveal public keys** associated with tokens after they have been claimed.
 - **Support for ERC721 token standards** with additional functionalities for revealable and burnable tokens.
 
+### Requirements
+To run the EvidenzRevealableConsensualSBT contract and associated development tools, ensure the following versions are installed:
+
+- **Node.js**: Version `20.9.0` or later.
+- **npm:** Version `10.1.0` or later.
+- **Slither:** Latest version.
+
+These requirements ensure compatibility and stability with the development environment. Node.js and npm are essential for managing dependencies and executing scripts, while Slither is a static analysis tool used for detecting security vulnerabilities and potential issues in smart contracts.
+
 ## NPM scripts
 
 ### Compile the smart contracts:
