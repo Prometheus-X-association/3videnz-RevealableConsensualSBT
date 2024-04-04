@@ -387,6 +387,16 @@ This function checks if a contract implements a given interface.
 > - `IRenamable` interface id is `0xc47f0027`
 > - `IRevealable` interface id is `0x92a9a241`
 
+## Web Interface
+
+The `public/index.html` file contains a basic HTML web interface for integration of the credentials & descriptions directory. The application allows users to interact with a specific type of non-fungible tokens (NFTs) called "revealable consensual SBTs". Users can input the contract address and the chain RPC URL to retrieve information about the SBT collection deployed at that address.
+
+To use the provided web interface, open the public/index.html file in a web browser. This interface allows you to input the contract address of the collection and the chain RPC URL and view the issued tokens along with their details.
+
+#### Script Dependencies
+
+**Ethers.js**: A JavaScript library for interacting with Ethereum and Ethereum-like blockchains. The `public/ethers-5.7.2.min.js` file contains the minified version of Ethers.js used in the web interface.
+
 ## Contracts Details
 
 The system comprises the following contracts:
