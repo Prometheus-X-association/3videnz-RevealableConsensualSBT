@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3videnZ revealable consensual SBTs</title>
+  <script src="./ethers-5.7.2.min.js"></script>
+</head>
+<body>
+
+  <form id="collectionForm">
+    <h2>SBT collection</h2>
+    <label for="address">Address:</label>
+    <input type="text" id="address" name="address" required>
+    <br />
+    <label for="address">Chain RPC URL:</label>
+    <input type="text" id="rpc" name="rpc" placeholder="https://avalanche-fuji-c-chain-rpc.publicnode.com">
+    <br>
+    <input type="submit" value="Submit" onclick="submitHandler(event)">
+  </form>
+
+  <div id="SBTCollection" style="display: none">
+    <h2><span id="name"></h2>
+    <p><span id="totalSupply"></p>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Image</th>
+          <th>External URL</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="info">
+      </tbody>
+    </table>
+  </div>
+  
+  <p id="error" style="color: red; display: none;"></p>
+
+  <script>
+    const contractABI = [{"inputs":[{"internalType":"string","name":"name_","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"string","name":"burnAuth","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"enumIERC5484.BurnAuth","name":"burnAuth","type":"uint8"}],"name":"Issued","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Reveal","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"burnAuth","outputs":[{"internalType":"enumIERC5484.BurnAuth","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"string","name":"pinCode","type":"string"},{"internalType":"bytes","name":"signature","type":"bytes"}],"name":"claim","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"string","name":"pinCode","type":"string"},{"internalType":"string","name":"publicKey","type":"string"},{"internalType":"bytes","name":"signature","type":"bytes"}],"name":"claimAndReveal","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"defaultImage","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDefaultImage","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getHashedPinCode","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getHashedPublicKey","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getIssuer","outputs":[{"components":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"url","type":"string"}],"internalType":"structIOnChainAssets.Issuer","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getMessageToSign","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getTemplate","outputs":[{"components":[{"internalType":"string","name":"id","type":"string"},{"internalType":"string","name":"value","type":"string"},{"internalType":"string","name":"metadata","type":"string"},{"components":[{"internalType":"string","name":"url","type":"string"},{"internalType":"string","name":"params","type":"string"}],"internalType":"structEnvironment.Endpoint","name":"reader","type":"tuple"},{"components":[{"internalType":"string","name":"url","type":"string"},{"internalType":"string","name":"params","type":"string"}],"internalType":"structEnvironment.Endpoint","name":"toolbox","type":"tuple"}],"internalType":"structCustomTemplate.Template","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"id","type":"uint256"}],"name":"isRevealed","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"issuer","outputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"url","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"components":[{"internalType":"string","name":"data","type":"string"},{"internalType":"bytes","name":"hashedPublicKey","type":"bytes"},{"internalType":"bytes32","name":"hashedPinCode","type":"bytes32"}],"internalType":"structEvidenzRevealableConsensualSBT.ToMint[]","name":"toMint","type":"tuple[]"}],"name":"mint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"string","name":"publicKey","type":"string"}],"name":"reveal","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"newDefaultImage","type":"string"}],"name":"setDefaultImage","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"components":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"url","type":"string"}],"internalType":"structIOnChainAssets.Issuer","name":"issuer_","type":"tuple"}],"name":"setIssuer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"newName","type":"string"}],"name":"setName","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"components":[{"internalType":"string","name":"id","type":"string"},{"internalType":"string","name":"value","type":"string"},{"internalType":"string","name":"metadata","type":"string"},{"components":[{"internalType":"string","name":"url","type":"string"},{"internalType":"string","name":"params","type":"string"}],"internalType":"structEnvironment.Endpoint","name":"reader","type":"tuple"},{"components":[{"internalType":"string","name":"url","type":"string"},{"internalType":"string","name":"params","type":"string"}],"internalType":"structEnvironment.Endpoint","name":"toolbox","type":"tuple"}],"internalType":"structCustomTemplate.Template","name":"template_","type":"tuple"}],"name":"setTemplate","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"template","outputs":[{"internalType":"string","name":"id","type":"string"},{"internalType":"string","name":"value","type":"string"},{"internalType":"string","name":"metadata","type":"string"},{"components":[{"internalType":"string","name":"url","type":"string"},{"internalType":"string","name":"params","type":"string"}],"internalType":"structEnvironment.Endpoint","name":"reader","type":"tuple"},{"components":[{"internalType":"string","name":"url","type":"string"},{"internalType":"string","name":"params","type":"string"}],"internalType":"structEnvironment.Endpoint","name":"toolbox","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenData","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]
+      
+    async function submitHandler(event) {
+      event.preventDefault()
+      
+      const SBTCollection = document.getElementById('SBTCollection')
+      const error = document.getElementById('error')
+        
+      SBTCollection.style.display = 'none'
+      SBTCollection.querySelector('#name').innerHTML = ''
+      SBTCollection.querySelector('#totalSupply').innerHTML = ''
+      SBTCollection.querySelector('#info').innerHTML = ''
+      error.style.display = 'none'
+
+      const contractAddress = document.getElementById('address').value.trim()
+      const chainRPC = document.getElementById('rpc').value.trim() || 'https://avalanche-fuji-c-chain-rpc.publicnode.com'
+
+      if (contractAddress !== '') try {
+        const provider = new ethers.providers.JsonRpcProvider(chainRPC)
+        const contract = new ethers.Contract(contractAddress, contractABI, provider)
+
+        contract.on('Issued', (from, to, tokenId, burnAuth) => refreshToken(tokenId, contract))
+        contract.on('Reveal', (tokenId) => refreshToken(tokenId, contract))
+        contract.on('Transfer', (from, to, tokenId) => to === ethers.constants.AddressZero
+          ? removeToken(tokenId, contract)
+          : refreshToken(tokenId, contract))
+
+        const name = await contract.name()
+        const totalSupply = await contract.totalSupply()
+        const tokenIds = await Promise.all(Array.from({ length: totalSupply }, (_, i) => contract.tokenByIndex(i).then(bigNumber => bigNumber.toNumber())))
+        const SBTs = await Promise.all(tokenIds.map(async tokenId => await tokenURI(tokenId, contract)))
+        if (SBTs.length > 0) {
+          const info = SBTCollection.querySelector('#info')
+          SBTs.map((sbt, index) => toRow(tokenIds[index], sbt)).forEach(row => info.appendChild(row))
+        }
+
+        SBTCollection.querySelector('#name').innerHTML = name
+        SBTCollection.querySelector('#totalSupply').innerHTML = ` (${totalSupply} remaining)`
+        SBTCollection.style.display = 'block'
+      } catch (err) {
+        error.style.display = 'block'
+        error.textContent = 'Error: ' + err.message
+      }
+    }
+
+    async function refreshToken(tokenId, contract) {
+      const sbt = await tokenURI(tokenId, contract)
+      const row = toRow(tokenId, sbt)
+      const existingRow = document.getElementById(tokenId)
+      if (existingRow)
+        existingRow.parentNode.replaceChild(row, existingRow)
+      else {
+        const supply = ` (${await contract.totalSupply()} remaining)`
+        document.getElementById('totalSupply').innerHTML = supply
+        const info = document.getElementById('info')
+        info.appendChild(row)
+      }
+    }
+
+    async function removeToken(tokenId, contract) {
+      const supply = ` (${await contract.totalSupply()} remaining)`
+      document.getElementById('totalSupply').innerHTML = supply
+      const row = document.getElementById(tokenId)
+      if (row) row.parentNode.removeChild(row)
+    }
+
+    async function tokenURI(tokenId, contract) {
+      try {
+        const tokenURI = await contract.tokenURI(tokenId)
+        const json = atob(tokenURI.replace(/^data:application\/json;base64,/, ''))
+        return JSON.parse(json)
+      } catch (err) {
+        if (err.message !== 'ERC721: invalid token ID (burnt)') throw err
+        else return { status: 'Burnt' }
+      }
+    }
+
+    function toRow(tokenId, { name, description, image, external_url, status }) {
+        const info = document.createElement('tr')
+        info.id = tokenId
+        return [ 
+          { value: name, type: 'text' }, 
+          { value: description, type: 'text' } ,
+          { value: image, type: 'link' } ,
+          { value: external_url, type: 'link' } ,
+          { value: status, type: 'text' }
+        ].map(({ value, type }) => {
+          const cell = document.createElement('td')
+          if (type === 'link') {
+            const link = document.createElement('a')
+            link.href = value
+            link.target = '_blank'
+            link.textContent = value
+            cell.appendChild(link)
+          } else {
+            cell.textContent = value
+          }
+          return cell
+        }).reduce((row, cell) => { 
+          row.appendChild(cell)
+          return row
+        }, info)
+      }
+  </script>
+
+</body>
+</html>
