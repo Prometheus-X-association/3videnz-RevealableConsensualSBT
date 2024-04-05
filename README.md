@@ -416,3 +416,40 @@ The system comprises the following contracts:
 The ABI (Application Binary Interface) for all contracts is accessible under the directory `artifacts/contracts/<contract-path>/<contract>.sol`. 
 
 Each contract's ABI is stored in a separate JSON file named `<contract>.json`. This ABI file provides a standardized interface description that specifies how to interact with the smart contract, including the available functions, their parameters, and return types. It serves as a crucial component for integrating smart contracts into decentralized applications (DApps) or other development environments.
+
+## Configuration and extension to other use cases
+
+### Overview of the "Template" field in the EvidenzRevealableConsensualSBT Smart Contract
+
+The EvidenzRevealableConsensualSBT smart contract has a "Template" field, accessible via the set/get methods documented above, which describes the specific characteristics of the type of credential deployed. It includes:
+- The type of credential (e.g., verifiedIdentity)
+- The encoding type of the data field (e.g., 3videnZ - when data is encrypted using the 3videnZ protocol, plain - when data is unencrypted)
+- Information on the expected data structure in the data field
+These parameters can be extended and modified to support other types of credentials or encoding protocols.
+
+### Specific configuration for identity management
+
+The EvidenzRevealableConsensualSBT smart contract has been documented, developed, and deployed for the management of verified identities. The template field is configured as follows:
+- Type: verifiedIdentity
+- Data encoding: 3videnZ
+- Expected fields:
+```json
+{
+    "catalog_name": "^catalog_name¤",
+    "catalog_url": "^catalog_url¤",,
+    "company_name": "^company_name¤",
+    "px_credential": "^px_credential¤",
+    "additional_info": "^additional_info¤"
+}
+```
+
+An instance of the Catalog_administration contract allowing the issuance of Identity Credentials has been deployed on the [Avalanche-Fuji testnet](https://testnet.snowtrace.io/token/0x370C1fbef3749d7FdA233f4383753EC416402dD5/contract/code?chainId=43113).
+
+### Extending the configuration to other authorizations (e.g., ecosystem_owner, ecosystem_data_user)
+
+The EvidenzRevealableConsensualSBT smart contract can be extended to address the issue of managing specific permissions. Just as an instance of the EvidenzRevealableConsensualSBT smart contract offers a solution for managing verified identities within Prometheus-X, other instances can be deployed and configured to manage specific permissions within catalogs, such as those described in the specifications as "ecosystem_owner" and "ecosystem_data_user". For example, a user holding an "ecosystem_owner" type credential with specific attributes could access and contribute to private workspaces, while a user with an "ecosystem_data_user" credential having the same specific attributes would have read-only access to the same workspace. To support this type of credential in the 3videnz-siwed-react library:
+- Add the new “XXX” type smart contracts to be supported in identityRegistries to define the credentials accepted by the library
+- Add a FetchXXX method allowing the verification of the ownership of an SBT of this type
+- Include in the login method, the specific data related to the XXX type credential if possessed
+
+It should be noted that such an implementation could present unnecessary complexity; therefore, it's important to justify the necessity of this implementation by a use case as relevant as that of cross-catalog identity management.
